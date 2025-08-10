@@ -34,6 +34,7 @@
             top: 0;
             z-index: 1000;
             transition: all 0.3s ease;
+            padding: 0;
         }
 
         nav {
@@ -41,6 +42,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 0;
+            position: relative;
         }
 
         .logo {
@@ -67,16 +69,30 @@
             color: #00d4ff;
         }
 
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
         /* Hero Section */
         .hero {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
                         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%23000" width="1920" height="1080"/><circle fill="%2300d4ff" opacity="0.1" cx="400" cy="300" r="100"/><circle fill="%2300d4ff" opacity="0.05" cx="1200" cy="600" r="150"/><circle fill="%2300d4ff" opacity="0.08" cx="800" cy="800" r="80"/></svg>');
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             text-align: center;
             position: relative;
             overflow: hidden;
+            padding: 120px 0 60px;
+        }
+
+        .hero-content {
+            width: 100%;
         }
 
         .hero-content h1 {
@@ -86,6 +102,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            line-height: 1.2;
         }
 
         .hero-subtitle {
@@ -99,6 +116,9 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
             margin-top: 3rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .stat-card {
@@ -403,22 +423,180 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            /* Mobile Header */
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0.98);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3rem;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                transform: translateX(0);
+            }
+
+            .nav-links a {
+                font-size: 1.5rem;
+                font-weight: 600;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+                z-index: 1001;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+                z-index: 1001;
+            }
+
+            /* Mobile Hero */
+            .hero {
+                min-height: 100vh;
+                padding: 100px 0 40px;
             }
 
             .hero-content h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
+                line-height: 1.3;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-content > p {
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin-bottom: 2rem;
             }
 
             .hero-stats {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .stat-card {
+                padding: 1.5rem 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .stat-label {
+                font-size: 0.8rem;
+            }
+
+            /* Mobile Sections */
+            .services,
+            .performance,
+            .testimonials,
+            .contact {
+                padding: 4rem 0;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
             }
 
             .services-grid,
             .performance-grid,
             .testimonials-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .service-card,
+            .testimonial-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .service-icon {
+                font-size: 2.5rem;
+            }
+
+            .performance-card {
+                padding: 1.5rem;
+            }
+
+            .performance-number {
+                font-size: 2.5rem;
+            }
+
+            /* Mobile Contact */
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .contact-info,
+            .contact-form {
+                padding: 2rem 1.5rem;
+            }
+
+            /* Mobile Footer */
+            footer {
+                padding: 2rem 0 1rem;
+            }
+
+            .footer-logo {
+                font-size: 1.5rem;
+            }
+
+            .social-links {
+                gap: 2rem;
+            }
+
+            .social-links a {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .service-card,
+            .testimonial-card,
+            .contact-info,
+            .contact-form {
+                padding: 1.5rem 1rem;
             }
         }
 
@@ -444,6 +622,19 @@
             height: 100%;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="%2300d4ff" opacity="0.1" cx="20" cy="20" r="2"><animateTransform attributeName="transform" type="translate" values="0 0; 80 80; 0 0" dur="20s" repeatCount="indefinite"/></circle><circle fill="%2300d4ff" opacity="0.05" cx="80" cy="20" r="3"><animateTransform attributeName="transform" type="translate" values="0 0; -80 80; 0 0" dur="25s" repeatCount="indefinite"/></circle></svg>');
             pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Simplified background for mobile */
+        @media (max-width: 768px) {
+            .hero::before {
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="%2300d4ff" opacity="0.08" cx="20" cy="20" r="1.5"/><circle fill="%2300d4ff" opacity="0.04" cx="80" cy="80" r="2"/><circle fill="%2300d4ff" opacity="0.06" cx="50" cy="60" r="1"/></svg>');
+            }
         }
     </style>
 </head>
@@ -453,12 +644,15 @@
         <nav class="container">
             <a href="#" class="logo">SkipTheFirm</a>
             <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#performance">Performance</a></li>
-                <li><a href="#testimonials">Client Feedback</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="#home" onclick="closeMenu()">Home</a></li>
+                <li><a href="#services" onclick="closeMenu()">Services</a></li>
+                <li><a href="#performance" onclick="closeMenu()">Performance</a></li>
+                <li><a href="#testimonials" onclick="closeMenu()">Client Feedback</a></li>
+                <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
             </ul>
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
     </header>
 
@@ -867,20 +1061,53 @@
             typeWriter(heroTitle, originalText, 80);
         });
 
-        // Parallax effect for hero section
+        // Parallax effect for hero section (disabled on mobile for performance)
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             const hero = document.querySelector('.hero');
-            if (hero) {
+            
+            // Only apply parallax on desktop
+            if (window.innerWidth > 768 && hero) {
                 hero.style.transform = `translateY(${scrolled * 0.5}px)`;
             }
         });
 
-        // Mobile menu toggle (for future implementation)
+        // Mobile menu toggle
         function toggleMobileMenu() {
             const navLinks = document.querySelector('.nav-links');
+            const menuToggle = document.querySelector('.mobile-menu-toggle i');
+            
             navLinks.classList.toggle('active');
+            
+            // Change hamburger to X when open
+            if (navLinks.classList.contains('active')) {
+                menuToggle.classList.remove('fa-bars');
+                menuToggle.classList.add('fa-times');
+            } else {
+                menuToggle.classList.remove('fa-times');
+                menuToggle.classList.add('fa-bars');
+            }
         }
+
+        // Close mobile menu
+        function closeMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            const menuToggle = document.querySelector('.mobile-menu-toggle i');
+            
+            navLinks.classList.remove('active');
+            menuToggle.classList.remove('fa-times');
+            menuToggle.classList.add('fa-bars');
+        }
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.querySelector('.nav-links');
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
+                closeMenu();
+            }
+        });
 
         // Add dynamic typing effect to hero title
         function typeWriter(element, text, speed = 100) {
