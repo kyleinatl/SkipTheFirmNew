@@ -763,7 +763,7 @@
             });
         }
 
-        // Intersection Observer for fade-in animations
+        // Intersection Observer for fade-in animations (excluding hero stats)
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -776,15 +776,18 @@
                     
                     // Trigger counter animation when performance section becomes visible
                     if (entry.target.closest('#performance')) {
-                        setTimeout(animateCounters, 200);
+                        setTimeout(() => animateCounters(), 200);
                     }
                 }
             });
         }, observerOptions);
 
-        // Observe all fade-in elements
+        // Observe all fade-in elements except hero stats
         document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
+            // Don't observe hero stats cards - they'll animate immediately
+            if (!el.closest('.hero-stats')) {
+                observer.observe(el);
+            }
         });
 
         // Header scroll effect
@@ -818,13 +821,51 @@
             this.reset();
         });
 
-        // Add loading animation to stat cards
-        setTimeout(() => {
-            document.querySelectorAll('.stat-card').forEach((card, index) => {
+        // Add loading animation to stat cards and trigger counter immediately
+        window.addEventListener('load', () => {
+            // Animate hero stat cards immediately
+            const heroStatCards = document.querySelectorAll('.hero-stats .stat-card');
+            heroStatCards.forEach((card, index) => {
                 card.style.animationDelay = `${index * 0.2}s`;
                 card.classList.add('visible');
             });
-        }, 500);
+            
+            // Start counter animation for hero stats immediately
+            setTimeout(() => {
+                const heroCounters = document.querySelectorAll('.hero-stats [data-target]');
+                heroCounters.forEach(counter => {
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const increment = target / 100;
+                    let current = 0;
+                    
+                    const updateCounter = () => {
+                        if (current < target) {
+                            current += increment;
+                            counter.textContent = Math.floor(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                            
+                            // Add specific suffixes based on the target value
+                            if (target === 50000) {
+                                counter.innerHTML = target.toLocaleString() + '+';
+                            } else if (target === 275 || target === 110) {
+                                counter.innerHTML = target + '%';
+                            } else if (target === 50) {
+                                counter.innerHTML = target + '+';
+                            }
+                        }
+                    };
+                    
+                    updateCounter();
+                });
+            }, 800); // Start counters after cards have animated in
+            
+            // Add dynamic typing effect to hero title
+            const heroTitle = document.querySelector('.hero-content h1');
+            const originalText = heroTitle.textContent;
+            typeWriter(heroTitle, originalText, 80);
+        });
 
         // Parallax effect for hero section
         window.addEventListener('scroll', () => {
@@ -856,13 +897,6 @@
             
             type();
         }
-
-        // Initialize typing effect after page load
-        window.addEventListener('load', () => {
-            const heroTitle = document.querySelector('.hero-content h1');
-            const originalText = heroTitle.textContent;
-            typeWriter(heroTitle, originalText, 80);
-        });
 
         // Add hover effects for service cards
         document.querySelectorAll('.service-card').forEach(card => {
