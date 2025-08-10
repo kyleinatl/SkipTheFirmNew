@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkipTheFirm | Atlanta Website Building & Automation Agency</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CRM Tracking Pixel -->
+    <script id="vtag-ai-js" async src="https://r2.leadsy.ai/tag.js" data-pid="1tzOkloTEC0fBspUS" data-version="062024"></script>
+    
     <style>
         * {
             margin: 0;
@@ -50,6 +54,19 @@
             font-weight: bold;
             color: #00d4ff;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img {
+            height: 40px;
+            width: auto;
+            transition: transform 0.3s ease;
+            filter: brightness(1.1);
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
         }
 
         .nav-links {
@@ -373,6 +390,37 @@
             box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
         }
 
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Form Status Messages */
+        .form-status {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .form-status.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+        }
+
+        .form-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+        }
+
+        .btn-loading {
+            display: none;
+        }
+
         /* Footer */
         footer {
             background: rgba(0, 0, 0, 0.9);
@@ -461,6 +509,10 @@
             .logo {
                 font-size: 1.5rem;
                 z-index: 1001;
+            }
+
+            .logo-img {
+                height: 32px;
             }
 
             /* Mobile Hero */
@@ -642,7 +694,9 @@
     <!-- Header -->
     <header>
         <nav class="container">
-            <a href="#" class="logo">SkipTheFirm</a>
+            <a href="#" class="logo">
+                <img src="/images/logo.png" alt="SkipTheFirm" class="logo-img">
+            </a>
             <ul class="nav-links">
                 <li><a href="#home" onclick="closeMenu()">Home</a></li>
                 <li><a href="#services" onclick="closeMenu()">Services</a></li>
@@ -817,6 +871,27 @@
     </section>
 
     <!-- Contact Section -->
+    <!-- 
+    CONTACT FORM - ACTIVE FORMSPREE INTEGRATION
+    
+    ✅ FORMSPREE CONFIGURED:
+    - Endpoint: https://formspree.io/f/xblkqqdd
+    - Status: ACTIVE - Ready to receive submissions
+    - Sends to: Your registered Formspree email
+    
+    FORM FEATURES:
+    ✅ Professional loading states with spinner
+    ✅ Success/error message handling  
+    ✅ Form validation (required fields)
+    ✅ Responsive design
+    ✅ Spam protection via Formspree
+    
+    TO TEST:
+    1. Fill out the form on your live site
+    2. Submit it
+    3. Check your email for the submission
+    4. Verify success message appears on site
+    -->
     <section id="contact" class="contact">
         <div class="container">
             <h2 class="section-title fade-in">Get In Touch</h2>
@@ -861,7 +936,7 @@
                 
                 <div class="contact-form fade-in">
                     <h3 style="margin-bottom: 2rem; color: #00d4ff;">Send us a Message</h3>
-                    <form>
+                    <form action="https://formspree.io/f/xblkqqdd" method="POST" id="contact-form">
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" id="name" name="name" required>
@@ -882,7 +957,14 @@
                             <textarea id="message" name="message" rows="5" required></textarea>
                         </div>
                         
-                        <button type="submit" class="btn">Send Message</button>
+                        <button type="submit" class="btn" id="submit-btn">
+                            <span class="btn-text">Send Message</span>
+                            <span class="btn-loading" style="display: none;">
+                                <i class="fas fa-spinner fa-spin"></i> Sending...
+                            </span>
+                        </button>
+                        
+                        <div id="form-status" style="margin-top: 1rem; text-align: center;"></div>
                     </form>
                 </div>
             </div>
@@ -996,23 +1078,52 @@
             }
         });
 
-        // Form submission handler
-        document.querySelector('form').addEventListener('submit', function(e) {
+        // Form submission handler with Formspree integration
+        document.getElementById('contact-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Get form data
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
+            const form = this;
+            const formData = new FormData(form);
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnLoading = submitBtn.querySelector('.btn-loading');
+            const statusDiv = document.getElementById('form-status');
             
-            // Simple validation
-            if (!data.name || !data.email || !data.message) {
-                alert('Please fill in all required fields.');
-                return;
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            statusDiv.innerHTML = '';
+            statusDiv.className = '';
+            
+            try {
+                // Replace 'YOUR_FORM_ID' with your actual Formspree form ID
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    // Success
+                    statusDiv.innerHTML = '✅ Thank you! Your message has been sent successfully. We\'ll get back to you soon!';
+                    statusDiv.className = 'form-status success';
+                    form.reset();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            } catch (error) {
+                // Error
+                statusDiv.innerHTML = '❌ Oops! There was a problem sending your message. Please try again or contact us directly.';
+                statusDiv.className = 'form-status error';
+            } finally {
+                // Reset button state
+                submitBtn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
             }
-            
-            // Show success message (in a real implementation, you'd send this to a server)
-            alert('Thank you for your message! We\'ll get back to you soon.');
-            this.reset();
         });
 
         // Add loading animation to stat cards and trigger counter immediately
